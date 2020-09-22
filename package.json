@@ -1,0 +1,129 @@
+{
+  "name": "fish-read",
+  "version": "0.0.1",
+  "description": "实用的读书插件",
+  "publisher": "SoulFish",
+  "icon": "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=4146065894,1403163258&fm=26&gp=0.jpg",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "sjy",
+  "license": "ISC",
+  "engines": {
+    "vscode": "^1.49.1"
+  },
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./src/extension",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "fishread",
+      "properties": {
+        "fishread.book.pageSize": {
+          "type": "number",
+          "default": 1000,
+          "description": "每页展示字数"
+        },
+        "fishread.bookshelf.list": {
+          "type": "array",
+          "default": [],
+          "description": "书架列表(禁止编辑)"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "fishread.openfile",
+        "title": "打开文件",
+        "icon": {
+          "light": "static/images/add.svg",
+          "dark": "static/images/add.svg"
+        }
+      },
+      {
+        "command": "fishread.bookshelf.refresh",
+        "title": "刷新书架",
+        "icon": {
+          "light": "static/images/refresh.svg",
+          "dark": "static/images/refresh.svg"
+        }
+      },
+      {
+        "command": "fishread.bookshelf.delete",
+        "title": "删除"
+      },
+      {
+        "command": "fishread.bookshelf.open",
+        "title": "打开"
+      },
+      {
+        "command": "fishread.book.nextPage",
+        "title": "下一页"
+      },
+      {
+        "command": "fishread.book.prevPage",
+        "title": "上一页"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "fishread.book.nextPage",
+        "key": "ctrl+.",
+        "mac": "cmd+."
+      },
+      {
+        "command": "fishread.book.prevPage",
+        "key": "ctrl+,",
+        "mac": "cmd+,"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "fishread.openfile",
+          "group": "navigation"
+        },
+        {
+          "command": "fishread.bookshelf.refresh",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "fishread.bookshelf.delete"
+        },
+        {
+          "command": "fishread.bookshelf.open"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "fishread",
+          "title": "fishread",
+          "icon": "static/images/fish.svg"
+        }
+      ]
+    },
+    "views": {
+      "fishread": [
+        {
+          "id": "bookshelf",
+          "name": "书架"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "bookshelf",
+        "contents": "欢迎使用\n[导入](command:fishread.openfile)"
+      }
+    ]
+  },
+  "dependencies": {
+    "chardet": "^1.2.2"
+  }
+}
