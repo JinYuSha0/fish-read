@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "实用的读书插件",
   "publisher": "SoulFish",
-  "icon": "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=4146065894,1403163258&fm=26&gp=0.jpg",
+  "icon": "static/images/logo.jpeg",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
