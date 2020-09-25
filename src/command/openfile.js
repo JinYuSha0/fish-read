@@ -1,6 +1,7 @@
 const vscode = require('vscode');
 const main = require('../main');
 const chardet = require('chardet');
+const utils = require('../utils');
 
 module.exports = function (context) {
   context.subscriptions.push(
@@ -18,6 +19,7 @@ module.exports = function (context) {
         if (file && file[0]) {
           try {
             file = file[0];
+            file.path = utils.filepathValid(file.path);
             const encoding = await chardet.detectFile(file.path);
             file.encoding = encoding;
             main.bookshelf.add(file);

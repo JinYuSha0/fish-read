@@ -9,7 +9,7 @@ module.exports = function (context) {
       const currPanel = getCurrPanel();
       if (currPanel) {
         const bookInfo = main.bookshelf.findOne(currPanel.viewType);
-        const content = await main.Drive.nextPage(bookInfo);
+        const content = await main.Drive.nextPage(utils.cloneDeep(bookInfo));
         main.Drive.contentChange(currPanel, content);
       } else {
         utils.showError('未知页面');

@@ -90,6 +90,10 @@ exports.Drive = {
     return content;
   },
   prevPage: async function (bookInfo, update) {
+    if (bookInfo.progress <= 0) {
+      utils.showError('没有上一页了');
+      return;
+    }
     const pageSize = this.getPageSize();
     bookInfo = utils.cloneDeep(bookInfo);
     const { content, byteSize } = await prevPage(bookInfo, pageSize);
@@ -116,6 +120,7 @@ function nextPage(bookInfo, num) {
   return new Promise((resolve, reject) => {
     const countSize = Math.abs(num * 4);
     const { path, progress, size, encoding, byteSize } = bookInfo;
+
     let start = progress + byteSize,
       end = start + countSize,
       byteArray = [];
@@ -123,16 +128,16 @@ function nextPage(bookInfo, num) {
       flags: 'r',
       encoding,
       start: start <= 0 ? 0 : start,
-      end: end >= size ? size : end,
-      autoClose: true,
+      end: end,
     });
     rs.once('error', (error) => {
       reject(error);
     });
-    rs.on('data', (chunk) => {
+    rs.once('data', (chunk) => {
       byteArray = byteArray.concat(chunk);
+      rs.destroy();
     });
-    rs.on('end', () => {
+    rs.on('close', () => {
       const content = byteArray.toString().slice(0, num);
       // 转换为字节数组
       const fixNumberBuffer = Buffer.from(content, encoding);
@@ -140,7 +145,6 @@ function nextPage(bookInfo, num) {
         content,
         byteSize: fixNumberBuffer.length,
       });
-      rs.destroy();
     });
   });
 }
@@ -156,7 +160,7 @@ function prevPage(bookInfo, num) {
     const countSize = Math.abs(num * 4);
     const { path, progress, size, encoding, byteSize } = bookInfo;
     let start = progress - countSize,
-      end = progress,
+      end = progress + 1,
       byteArray = [];
 
     const rs = fs.createReadStream(path, {
@@ -164,24 +168,28 @@ function prevPage(bookInfo, num) {
       encoding,
       start: start <= 0 ? 0 : start,
       end: end,
-      autoClose: true,
     });
     rs.once('error', (error) => {
       reject(error);
     });
-    rs.on('data', (chunk) => {
+    rs.once('data', (chunk) => {
       byteArray = byteArray.concat(chunk);
+      rs.destroy();
     });
-    rs.on('end', () => {
+    rs.on('close', () => {
       let content = byteArray.toString();
-      content = content.slice(content.length - num, content.length);
-      // 转换为字节数组
+      content = content.slice(content.length - num, content.lengt);
       const fixNumberBuffer = Buffer.from(content, encoding);
+
+      let showContent = byteArray.toString();
+      showContent = showContent.slice(
+        showContent.length - num - 1,
+        showContent.length - 1
+      );
       resolve({
-        content,
+        content: showContent,
         byteSize: fixNumberBuffer.length,
       });
-      rs.destroy();
     });
   });
 }
@@ -195,19 +203,18 @@ function readContentPointStartEnd(bookInfo, start, end) {
       encoding,
       start,
       end,
-      autoClose: true,
     });
     rs.once('error', (error) => {
       reject(error);
     });
-    rs.on('data', (chunk) => {
+    rs.once('data', (chunk) => {
       byteArray = byteArray.concat(chunk);
+      rs.destroy();
     });
-    rs.on('end', () => {
+    rs.on('close', () => {
       const content = byteArray.toString();
       // 转换为字节数组
-      resolve(content);
-      rs.destroy();
+      resolve(content.slice(0, content.length - 1));
     });
   });
 }
