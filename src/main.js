@@ -69,8 +69,8 @@ exports.Drive = {
     if (bookInfo.byteSize > 0) {
       content = await readContentPointStartEnd(
         bookInfo,
-        progress - 1,
-        progress + byteSize + 1
+        progress,
+        progress + byteSize
       );
     } else {
       const res = await nextPage(bookInfo, pageSize);
@@ -116,8 +116,8 @@ function nextPage(bookInfo, num) {
   return new Promise((resolve, reject) => {
     const countSize = Math.abs(num * 4);
     const { path, progress, size, encoding, byteSize } = bookInfo;
-    let start = progress + byteSize - 1,
-      end = start + countSize + 1,
+    let start = progress + byteSize,
+      end = start + countSize,
       byteArray = [];
     const rs = fs.createReadStream(path, {
       flags: 'r',
@@ -155,8 +155,8 @@ function prevPage(bookInfo, num) {
   return new Promise((resolve, reject) => {
     const countSize = Math.abs(num * 4);
     const { path, progress, size, encoding, byteSize } = bookInfo;
-    let start = progress - countSize - 1,
-      end = progress + 1,
+    let start = progress - countSize,
+      end = progress,
       byteArray = [];
 
     const rs = fs.createReadStream(path, {
